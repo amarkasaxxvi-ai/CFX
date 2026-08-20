@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#010204" />
+  <meta name="description" content="SHELEN v13 — Precision Over Noise. MT5 Bridge Edition." />
+
+  <title>SHELEN v13 — Precision Over Noise</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- =====================================================================
+     APP ROOT
+====================================================================== -->
+<div id="app">
+
+  <!-- =================================================================
+       TOPBAR
+  ================================================================== -->
+  <header class="topbar" role="banner">
+
+    <!-- Logo -->
+    <div class="tb-logo" aria-label="SHELEN Terminal">
+      <span class="tb-logo-she">SHE</span><span class="tb-logo-len">LEN</span>
+      <span class="tb-version-badge">v13</span>
+    </div>
+
+    <!-- MT5 Bridge Status Pill -->
+    <button class="tb-mt5-pill" id="tbMT5Pill" onclick="openMT5Modal()" aria-label="MT5 Bridge Status">
+      <span class="tb-mt5-dot" id="tbMT5Dot"></span>
+      <span class="tb-mt5-label" id="tbMT5Label">MT5</span>
+    </button>
+
+    <!-- Live Price Strip -->
+    <div class="tb-price-strip" id="tbPriceStrip" role="marquee" aria-live="polite">
+      <!-- Dynamically populated by script.js -->
+    </div>
+
+    <!-- UTC Clock -->
+    <div class="tb-clock" id="tbClock" aria-live="polite">
+      <span class="tb-clock-time" id="tbClockTime">--:--:--</span>
+      <span class="tb-clock-date" id="tbClockDate">UTC</span>
+    </div>
+
+    <!-- User / Login Button -->
+    <button class="tb-user-btn" id="userBtn" onclick="handleUserBtn()" aria-label="User account">
+      LOGIN
+    </button>
+
+  </header><!-- /.topbar -->
+
+
+  <!-- =================================================================
+       FLASH NEWS MARQUEE BAR
+  ================================================================== -->
+  <div class="flash-news-bar" id="flashNewsBar" role="marquee" aria-label="Market news">
+    <div class="flash-news-track" id="flashNewsTrack">
+      <!-- Dynamically populated by script.js -->
+    </div>
+  </div>
+
+
+  <!-- =================================================================
+       LIVE PRICE TICKER (shown only on Terminal + News pages)
+  ================================================================== -->
+  <div class="ticker-bar" id="tickerBar" hidden>
+    <div class="ticker-inner" id="tickerInner">
+      <!-- Dynamically populated by script.js -->
+    </div>
+  </div>
+
+
+  <!-- =================================================================
+       MAIN CONTENT — PAGE CONTAINER
+  ================================================================== -->
+  <main class="content" id="mainContent">
+
+
+    <!-- ===============================================================
+         PAGE: HOME
+    ================================================================ -->
+    <section class="page active" id="pg-home" role="main" aria-label="Home">
+
+      <!-- Hero Block -->
+      <div class="hero-wrap">
+        <div class="hero-grid" aria-hidden="true"></div>
+
+        <div class="hero-content">
+
+          <!-- Eyebrow Label -->
+          <p class="hero-eyebrow">SHELEN TRADING TERMINAL · MT5 BRIDGE EDITION</p>
+
+          <!-- H1 -->
+          <h1 class="hero-h1">
+            PRE<span class="hero-stroke">CI</span><br>SION.
+          </h1>
+
+          <!-- Tagline -->
+          <p class="hero-tagline">
+            Terminal AI sinyal trading terpresisi.<br>
+            <strong>ICT · SMC · Alchemist</strong> — langsung dari akun MT5 kamu.
+          </p>
+
+          <!-- Owner Badge -->
+          <div class="owner-badge">
+            <div class="owner-avatar" aria-hidden="true">NN</div>
+            <div class="owner-info">
+              <span class="owner-name">Nizar Nurkhalik</span>
+              <span class="owner-handle">@shelentrading · Founder &amp; Lead Dev</span>
+            </div>
+            <span class="owner-plan-pill">FOUNDER</span>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="hero-cta-row">
+            <button class="btn btn-gold hero-cta-primary" onclick="openAuth()">
+              ⚡ MULAI TRADING
+            </button>
+            <button class="btn btn-ghost hero-cta-secondary" onclick="openTosModal()">
+              T&amp;C
+            </button>
+          </div>
+
+        </div><!-- /.hero-content -->
+      </div><!-- /.hero-wrap -->
+
+      <!-- MT5 Quick-Connect Card -->
+      <div class="home-mt5-card card" id="homeMT5Card">
+        <div class="ch">
+          <span class="ct">MT5 BRIDGE</span>
+          <span class="cs" id="homeMT5Status">TIDAK TERHUBUNG</span>
+        </div>
+        <div class="home-mt5-body">
+          <div class="home-mt5-row">
+            <input
+              type="text"
+              class="field field-sm"
+              id="homeMT5UrlInput"
+              placeholder="ws://localhost:8080"
+              autocomplete="off"
+              spellcheck="false"
+              inputmode="url"
+            />
+            <button class="btn btn-green btn-sm" onclick="MT5Bridge.connectFromHome()">
+              CONNECT
+            </button>
+          </div>
+          <p class="home-mt5-hint">
+            Pasang EA "Shelen Bridge" di MT5 → masukkan URL bridge → CONNECT
+          </p>
+        </div>
+      </div><!-- /.home-mt5-card -->
+
+      <!-- Stats Grid -->
+      <div class="home-stats-grid" role="list">
+        <div class="hsc hsc-green" role="listitem">
+          <div class="hsc-value" id="hsSigCount">3,124</div>
+          <div class="hsc-label">AI SIGNALS FIRED</div>
+        </div>
+        <div class="hsc hsc-gold" role="listitem">
+          <div class="hsc-value">87%</div>
+          <div class="hsc-label">AVG WINRATE</div>
+        </div>
+        <div class="hsc hsc-cyan" role="listitem">
+          <div class="hsc-value">1:5</div>
+          <div class="hsc-label">MIN R:R RATIO</div>
+        </div>
+        <div class="hsc hsc-purple" role="listitem">
+          <div class="hsc-value">3</div>
+          <div class="hsc-label">ACTIVE TIERS</div>
+        </div>
+      </div><!-- /.home-stats-grid -->
+
+      <!-- Ambient Music Player -->
+      <div class="music-player card" id="musicPlayer">
+        <div class="music-header">
+          <span class="music-ico" aria-hidden="true">🎵</span>
+          <div class="music-meta">
+            <span class="music-title" id="musicTitle">Lo-Fi Trading Session</span>
+            <span class="music-sub">SHELEN AMBIENCE ENGINE</span>
+          </div>
+        </div>
+        <div class="music-controls">
+          <button class="mc-btn" id="prevBtn" onclick="prevTrack()" aria-label="Previous track">⏮</button>
+          <button class="mc-btn mc-btn--play" id="playBtn" onclick="togglePlay()" aria-label="Play / Pause">▶</button>
+          <button class="mc-btn" id="nextBtn" onclick="nextTrack()" aria-label="Next track">⏭</button>
+          <button class="mc-btn" id="muteBtn" onclick="toggleMute()" aria-label="Toggle mute">🔊</button>
+          <input
+            type="range"
+            class="music-vol"
+            id="volSlider"
+            min="0" max="100" value="60"
+            oninput="setVol(this.value)"
+            aria-label="Volume"
+          />
+        </div>
+        <div class="track-list" id="trackList" role="list">
+          <!-- Dynamically populated by script.js -->
+        </div>
+      </div><!-- /.music-player -->
+
+      <!-- Feature Pills Grid -->
+      <div class="feat-grid">
+        <button class="feat-card" onclick="goPage('terminal')" aria-label="AI Signal Engine">
+          <span class="feat-ico" aria-hidden="true">⚡</span>
+          <span class="feat-title">AI Signal</span>
+          <span class="feat-desc">ICT + SMC + Alchemist confluence realtime</span>
+        </button>
+        <button class="feat-card" onclick="openMT5Modal()" aria-label="MT5 Bridge">
+          <span class="feat-ico" aria-hidden="true">🔌</span>
+          <span class="feat-title">MT5 Bridge</span>
+          <span class="feat-desc">Harga live langsung dari akun MT5 kamu</span>
+        </button>
+        <button class="feat-card" onclick="goPage('news')" aria-label="Financial News">
+          <span class="feat-ico" aria-hidden="true">📰</span>
+          <span class="feat-title">Eco News</span>
+          <span class="feat-desc">High-impact events &amp; AI sentiment bias</span>
+        </button>
+        <button class="feat-card" onclick="goPage('journal')" aria-label="Trade Journal">
+          <span class="feat-ico" aria-hidden="true">📓</span>
+          <span class="feat-title">Journal</span>
+          <span class="feat-desc">Equity curve, winrate ring, P&amp;L tracker</span>
+        </button>
+      </div><!-- /.feat-grid -->
+
+      <!-- Broker Partner Section -->
+      <section class="broker-section" aria-label="Broker Partners">
+        <div class="section-divider">
+          <span class="section-divider-label">BROKER PARTNER</span>
+        </div>
+        <div class="broker-card card">
+          <p class="broker-headline">🎁 DAFTAR VIA BROKER PARTNER → DAPAT PREMIUM GRATIS SEUMUR HIDUP</p>
+          <p class="broker-desc">
+            Daftar di salah satu broker di bawah via link Nizar → deposit → kirim nomor akun ke Admin WA untuk aktivasi PREMIUM seumur hidup.
+          </p>
+          <div class="broker-btn-col">
+            <a
+              href="https://www.hfmtrade-ind.com/sv/en/?refid=30517682"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-gold2"
+            >🏦 HFM — Cocok Buat Modal Kecil →</a>
+            <a
+              href="https://one.exnessonelink.com/a/4qa0vqh2p9?source=app&platform=mobile&pid=mobile_share"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-cyan"
+            >⚡ EXNESS — Terbaik Instant Withdraw →</a>
+            <a
+              href="https://wa.me/6285839053130?text=Halo+Admin+SHELEN%2C+saya+sudah+daftar+dan+deposit+via+broker+partner.+Nomor+akun+saya%3A+"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-green"
+            >💬 Kirim Nomor Akun ke Admin WA →</a>
+          </div>
+        </div>
+      </section><!-- /.broker-section -->
+
+      <div class="page-bottom-spacer"></div>
+
+      <!-- Hidden Audio Element -->
+      <audio id="bgAudio" preload="none" aria-hidden="true"></audio>
+
+    </section><!-- /#pg-home -->
+
+
+    <!-- ===============================================================
+         PAGE: TERMINAL (SIGNAL ENGINE)
+    ================================================================ -->
+    <section class="page" id="pg-terminal" role="main" aria-label="Trading Terminal" hidden>
+
+      <!-- Lock Overlay -->
+      <div class="lock" id="lock-terminal" role="alertdialog" aria-label="Access locked">
+        <span class="lock-ico" aria-hidden="true">🔒</span>
+        <h2 class="lock-title">AKSES TERKUNCI</h2>
+        <p class="lock-desc">Login untuk mengakses<br>Terminal Trading Realtime</p>
+        <button class="btn btn-gold" onclick="openAuth()">LOGIN / DAFTAR</button>
+      </div>
+
+      <!-- Terminal Content (shown after login) -->
+      <div class="terminal-content" id="tc-content" hidden>
+
+        <!-- ── MT5 BRIDGE STATUS PANEL ── -->
+        <div class="mt5-bridge-panel card" id="mt5BridgePanel">
+          <div class="ch">
+            <span class="ct">MT5 BRIDGE</span>
+            <div class="mt5-status-row">
+              <span class="mt5-status-dot" id="mt5StatusDot" data-state="disconnected"></span>
+              <span class="mt5-status-text" id="mt5StatusText">TIDAK TERHUBUNG</span>
+            </div>
+          </div>
+          <!-- Account State Grid -->
+          <div class="mt5-account-grid" id="mt5AccountGrid">
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">BALANCE</span>
+              <span class="mt5-acc-value" id="mt5Balance">—</span>
+            </div>
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">EQUITY</span>
+              <span class="mt5-acc-value" id="mt5Equity">—</span>
+            </div>
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">MARGIN</span>
+              <span class="mt5-acc-value" id="mt5Margin">—</span>
+            </div>
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">FREE MARGIN</span>
+              <span class="mt5-acc-value mt5-acc-value--positive" id="mt5FreeMargin">—</span>
+            </div>
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">DRAWDOWN</span>
+              <span class="mt5-acc-value mt5-acc-value--danger" id="mt5Drawdown">—</span>
+            </div>
+            <div class="mt5-acc-cell">
+              <span class="mt5-acc-label">PROFIT</span>
+              <span class="mt5-acc-value" id="mt5Profit">—</span>
+            </div>
+          </div>
+          <!-- Open Positions Mini-List -->
+          <div class="mt5-positions" id="mt5PositionsList" hidden>
+            <div class="mt5-pos-header">
+              <span class="ct">OPEN POSITIONS</span>
+              <span class="cs" id="mt5PosCount">0</span>
+            </div>
+            <div class="mt5-pos-rows" id="mt5PosRows">
+              <!-- Dynamically populated by script.js -->
+            </div>
+          </div>
+          <!-- Quick Connect Row -->
+          <div class="mt5-quick-row">
+            <button class="btn btn-ghost btn-sm" onclick="openMT5Modal()">⚙ SETUP BRIDGE</button>
+            <span class="mt5-latency" id="mt5Latency"></span>
+          </div>
+        </div><!-- /.mt5-bridge-panel -->
+
+        <!-- ── PERFORMANCE METRICS ── -->
+        <div class="metrics-row" role="list">
+          <div class="mc" role="listitem">
+            <div class="mc-label">NET P&amp;L</div>
+            <div class="mc-value mc-value--green" id="mc-pnl">+$0</div>
+          </div>
+          <div class="mc" role="listitem">
+            <div class="mc-label">WINRATE</div>
+            <div class="mc-value mc-value--gold" id="mc-wr">0%</div>
+          </div>
+          <div class="mc" role="listitem">
+            <div class="mc-label">SIGNALS</div>
+            <div class="mc-value mc-value--cyan" id="mc-sig">0</div>
+          </div>
+          <div class="mc" role="listitem">
+            <div class="mc-label">MAX DD</div>
+            <div class="mc-value mc-value--red" id="mc-dd">0%</div>
+          </div>
+        </div><!-- /.metrics-row -->
+
+        <!-- ── ORDERFLOW CHART ── -->
+        <div class="chart-card card" id="chartCard">
+          <div class="ch chart-ch">
+            <span class="ct">ORDERFLOW CHART</span>
+            <!-- Killzone Widget -->
+            <div class="kz-widget" id="kzWidget" hidden>
+              <span class="kz-dot" id="kzDot" aria-hidden="true"></span>
+              <span class="kz-time" id="kzTime">--:--:--</span>
+              <span class="kz-session" id="kzSession">--</span>
+            </div>
+            <!-- Symbol Selector -->
+            <button class="sym-badge" id="symBadge" onclick="openSymModal()" aria-label="Select instrument">
+              <span id="symLabel">XAUUSD</span>
+              <span class="sym-caret" aria-hidden="true">▾</span>
+            </button>
+          </div>
+          <!-- Timeframe Bar -->
+          <div class="chart-tb" id="tfBar" role="group" aria-label="Timeframe selector">
+            <button class="tf-btn" data-tf="1"   onclick="setTF('1',this)">1M</button>
+            <button class="tf-btn tf-btn--active" data-tf="5"   onclick="setTF('5',this)">5M</button>
+            <button class="tf-btn" data-tf="15"  onclick="setTF('15',this)">15M</button>
+            <button class="tf-btn" data-tf="30"  onclick="setTF('30',this)">30M</button>
+            <button class="tf-btn" data-tf="60"  onclick="setTF('60',this)">1H</button>
+            <button class="tf-btn" data-tf="240" onclick="setTF('240',this)">4H</button>
+            <button class="tf-btn" data-tf="D"   onclick="setTF('D',this)">1D</button>
+            <button class="tf-btn" data-tf="W"   onclick="setTF('W',this)">1W</button>
+          </div>
+          <!-- Chart Frame -->
+          <div class="chart-frame" id="chartFrame">
+            <iframe
+              id="tvIframe"
+              src=""
+              title="TradingView Chart"
+              allowfullscreen
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
+            ></iframe>
+          </div>
+        </div><!-- /.chart-card -->
+
+        <!-- ── AI SENTIMENT METER (Terminal) ── -->
+        <div class="sab card" id="terminalSentiment">
+          <div class="ch">
+            <span class="ct">AI DAILY BIAS</span>
+            <span class="sab-verdict" id="termSabVerdict">BULLISH</span>
+          </div>
+          <div class="sab-body">
+            <div class="sab-track">
+              <div class="sab-needle" id="termSabNeedle" style="left:65%;" aria-hidden="true"></div>
+            </div>
+            <div class="sab-labels">
+              <span class="sab-label sab-label--bear">BEARISH</span>
+              <span class="sab-label sab-label--neutral">NETRAL</span>
+              <span class="sab-label sab-label--bull">BULLISH</span>
+            </div>
+          </div>
+        </div><!-- /.sab -->
+
+        <!-- ── ORDERBOOK DOM ── -->
+        <div class="ob-card card" id="obCard">
+          <div class="ch">
+            <span class="ct">ORDERBOOK DOM</span>
+            <span class="cs" id="obSpreadLabel">SPREAD: —</span>
+          </div>
+          <div class="ob-wrap">
+            <div class="ob-grid">
+              <div class="ob-side">
+                <div class="ob-side-label ob-side-label--bid">BIDS — BUY WALL</div>
+                <div class="ob-rows" id="obBids" aria-label="Bid prices" aria-live="polite">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+              <div class="ob-side">
+                <div class="ob-side-label ob-side-label--ask">ASKS — SELL WALL</div>
+                <div class="ob-rows" id="obAsks" aria-label="Ask prices" aria-live="polite">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.ob-card -->
+
+        <!-- ── CURRENCY STRENGTH METER ── -->
+        <div class="cs-card card" id="csCard">
+          <div class="ch">
+            <span class="ct">CURRENCY STRENGTH METER</span>
+            <span class="cs" id="csLastUpdate">LIVE</span>
+          </div>
+          <div class="cs-wrap" id="csWrap" aria-live="polite">
+            <!-- Dynamically populated by script.js -->
+          </div>
+        </div><!-- /.cs-card -->
+
+        <!-- ── ALGO ENGINE STATUS ── -->
+        <div class="algo-card card" id="algoCard">
+          <div class="ch">
+            <span class="ct">ALGO ENGINE</span>
+          </div>
+          <div class="ss-bar">
+            <span class="ss-dot ss-dot--run" id="sBlob" aria-hidden="true"></span>
+            <span class="ss-name" id="sTxt">STRATEGY RUNNING</span>
+            <span class="ss-time" id="sTime">00:00:00</span>
+          </div>
+          <div class="algo-btns">
+            <button class="btn btn-gold2 btn-sm" id="btnPause" onclick="toggleStrat()">⏸ PAUSE</button>
+            <button class="btn btn-red btn-sm"   onclick="stopStrat()">⏹ STOP</button>
+            <button class="btn btn-cyan btn-sm"  onclick="resetStrat()">↺ RESET</button>
+          </div>
+        </div><!-- /.algo-card -->
+
+        <!-- ── RISK PARAMETERS ── -->
+        <div class="risk-card card" id="riskCard">
+          <div class="ch">
+            <span class="ct">RISK PARAMS — LIVE</span>
+            <span class="cs" id="riskMT5Note">LOCAL CALC</span>
+          </div>
+          <div class="risk-body">
+            <div class="rp-row">
+              <label class="rp-label" for="eqInp">EQUITY ($)</label>
+              <input
+                type="number"
+                class="field field-inline"
+                id="eqInp"
+                value="10000"
+                min="0"
+                step="100"
+                oninput="calcLot()"
+                aria-label="Account equity"
+              />
+            </div>
+            <div class="rp-slider-row">
+              <div class="rp-slider-header">
+                <span class="rp-label">MAX DRAWDOWN / DAY</span>
+                <span class="rp-value" id="ddLbl">5%</span>
+              </div>
+              <input type="range" id="ddRange" min="1" max="10" value="5" step="1" oninput="setDD(this.value)" aria-label="Max drawdown" />
+            </div>
+            <div class="rp-slider-row">
+              <div class="rp-slider-header">
+                <span class="rp-label">RISK / TRADE</span>
+                <span class="rp-value" id="rptLbl">1%</span>
+              </div>
+              <input type="range" id="rptRange" min="0.5" max="3" value="1" step="0.5" oninput="setRPT(this.value)" aria-label="Risk per trade" />
+            </div>
+            <div class="rp-row">
+              <span class="rp-label">SL MAX</span>
+              <span class="rp-value">20 PIPS</span>
+            </div>
+            <div class="rp-row">
+              <span class="rp-label">MIN R:R</span>
+              <span class="rp-value">1 : 5</span>
+            </div>
+            <div class="lot-result-box">
+              <div class="lot-result-label">CALCULATED LOT SIZE</div>
+              <div class="lot-result-value" id="lotOut">0.10 lots</div>
+            </div>
+            <div class="mm-tip">
+              💡 <strong>Rule:</strong> Jangan pernah risk lebih dari <strong>1–2%</strong> per trade.
+              Dengan equity $10K &amp; SL 20 pips, lot aman adalah <strong>0.05–0.10</strong>.
+              Max DD harian 5% = stop trading setelah loss $500.
+            </div>
+          </div>
+        </div><!-- /.risk-card -->
+
+        <!-- ── AI SIGNAL GENERATOR ── -->
+        <div class="signal-card card" id="signalCard">
+          <div class="ch">
+            <span class="ct">AI SIGNAL GENERATOR</span>
+            <span class="cs">ALCHEMIST v8</span>
+          </div>
+          <div class="eng-body">
+
+            <!-- Trading Style Tabs -->
+            <div class="eng-section">
+              <label class="flabel">TRADING STYLE</label>
+              <div class="style-tabs" role="group" aria-label="Trading style">
+                <button class="style-tab style-tab--active" id="st-scalp"   onclick="setStyle('scalp',this)">
+                  SCALPING<br><span class="style-sub">1M–5M · SL 10pip</span>
+                </button>
+                <button class="style-tab" id="st-intra"                     onclick="setStyle('intraday',this)">
+                  INTRADAY<br><span class="style-sub">15M–4H · SL 20pip</span>
+                </button>
+                <button class="style-tab" id="st-swing"                     onclick="setStyle('swing',this)">
+                  SWING<br><span class="style-sub">4H–1D · SL 50pip</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Instrument & Strategy Row -->
+            <div class="eng-row">
+              <div>
+                <label class="flabel" for="sigInst">INSTRUMENT</label>
+                <select class="field" id="sigInst" aria-label="Instrument">
+                  <option value="XAUUSD">XAUUSD — Gold</option>
+                  <option value="BTCUSD">BTCUSD — Bitcoin</option>
+                  <option value="EURUSD">EURUSD — Euro/USD</option>
+                  <option value="GBPUSD">GBPUSD — Pound/USD</option>
+                  <option value="USDJPY">USDJPY — USD/Yen</option>
+                  <option value="GBPJPY">GBPJPY — Pound/Yen</option>
+                  <option value="AUDUSD">AUDUSD — Aussie/USD</option>
+                  <option value="USDCAD">USDCAD — USD/CAD</option>
+                  <option value="XAGUSD">XAGUSD — Silver</option>
+                  <option value="WTIUSD">WTIUSD — Oil WTI</option>
+                  <option value="NAS100">NAS100 — Nasdaq</option>
+                  <option value="US30">US30 — Dow Jones</option>
+                </select>
+              </div>
+              <div>
+                <label class="flabel" for="sigStrat">STRATEGY</label>
+                <select class="field" id="sigStrat" aria-label="Strategy">
+                  <option value="alch">Alchemist QM + OCL</option>
+                  <option value="ict">ICT AMD + Killzone</option>
+                  <option value="msnr">MSNR RBS + SBR</option>
+                  <option value="crt">CRT TBS + Sweep</option>
+                  <option value="full">FULL CONFLUENCE ★</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Scan Button -->
+            <button class="btn btn-green" id="btnScan" onclick="genSignal()">
+              ▶ SCAN &amp; GENERATE AI SIGNAL
+            </button>
+
+            <!-- Divider -->
+            <div class="or-divider"><span>atau upload foto chart</span></div>
+
+            <!-- Photo Chart Analysis Drop Zone -->
+            <div
+              class="photo-drop"
+              id="photoDropZone"
+              role="button"
+              tabindex="0"
+              aria-label="Upload chart photo for AI analysis"
+              onclick="document.getElementById('chartPhotoInput').click()"
+              ondragover="event.preventDefault(); this.classList.add('photo-drop--over')"
+              ondragleave="this.classList.remove('photo-drop--over')"
+              ondrop="handlePhotoDrop(event)"
+              onkeydown="if(event.key==='Enter'||event.key===' '){document.getElementById('chartPhotoInput').click()}"
+            >
+              <span class="pd-icon" aria-hidden="true">📷</span>
+              <span class="pd-title">AI PHOTO CHART ANALYSIS</span>
+              <span class="pd-sub">PNG · JPG · WEBP — Drag &amp; drop atau tap</span>
+              <span class="pd-tier-note" id="photoTierNote">Memuat info plan…</span>
+            </div>
+
+            <!-- Photo Preview -->
+            <div class="photo-preview-wrap" id="photoPreviewWrap" hidden>
+              <div class="photo-preview">
+                <img id="photoPreviewImg" src="" alt="Chart preview" />
+                <div class="photo-preview-overlay">
+                  <button class="btn btn-purple btn-sm" onclick="runPhotoAnalysis()">
+                    🤖 ANALISA DENGAN AI
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="clearPhoto()">
+                    ✕ HAPUS
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input
+              type="file"
+              id="chartPhotoInput"
+              accept="image/*"
+              style="display:none;"
+              onchange="loadPhotoPreview(this)"
+            />
+
+            <!-- Voice Alert Test -->
+            <button class="btn btn-ghost btn-sm" onclick="voiceAlert()">🔊 VOICE ALERT TEST</button>
+
+          </div><!-- /.eng-body -->
+
+          <!-- Signal Feed -->
+          <div class="sig-feed" id="sigFeed" aria-live="polite" aria-label="Signal output">
+            <div class="sig-feed-empty">— PILIH STYLE &amp; KLIK SCAN —</div>
+          </div>
+
+        </div><!-- /.signal-card -->
+
+        <!-- ── ASK BUDDY BUTTON ── -->
+        <button class="buddy-btn" onclick="askBuddy()" aria-label="Ask Shelen Buddy">
+          🤖 ASK SHELEN BUDDY — Ringkasan Market &amp; Tips via Voice
+        </button>
+
+        <!-- ── UI ARCHITECT PANEL ── -->
+        <div class="architect-panel card" id="architectPanel">
+          <div class="ch"><span class="ct">🎨 THE ARCHITECT — UI CUSTOMIZER</span></div>
+          <div class="arch-body">
+            <div class="arch-row">
+              <span class="arch-label">Accent Color (Gold)</span>
+              <input
+                type="color"
+                class="color-picker"
+                id="accentColorPicker"
+                value="#f0b44a"
+                oninput="changeAccentColor(this.value)"
+                aria-label="Accent color"
+              />
+            </div>
+            <div class="arch-row">
+              <span class="arch-label">CRT Scanlines Effect</span>
+              <div class="toggle-wrap">
+                <button
+                  class="toggle"
+                  id="scanToggle"
+                  role="switch"
+                  aria-checked="false"
+                  onclick="toggleScanlines()"
+                  aria-label="Toggle CRT scanlines"
+                ></button>
+                <span class="toggle-label" id="scanLabel">OFF</span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.architect-panel -->
+
+        <!-- ── EXECUTION LOG ── -->
+        <div class="log-card card" id="logCard">
+          <div class="ch">
+            <span class="ct">EXECUTION LOG</span>
+            <button class="log-clear-btn" onclick="clearLog()" aria-label="Clear log">CLR</button>
+          </div>
+          <div class="log-body" id="logBody" role="log" aria-live="polite">
+            <!-- Dynamically populated -->
+          </div>
+        </div><!-- /.log-card -->
+
+        <div class="page-bottom-spacer"></div>
+
+      </div><!-- /#tc-content -->
+    </section><!-- /#pg-terminal -->
+
+
+    <!-- ===============================================================
+         PAGE: NEWS
+    ================================================================ -->
+    <section class="page" id="pg-news" role="main" aria-label="Financial News" hidden>
+
+      <!-- Lock Overlay -->
+      <div class="lock" id="lock-news" role="alertdialog" aria-label="Plan upgrade required">
+        <span class="lock-ico" aria-hidden="true">🔒</span>
+        <h2 class="lock-title">PLAN MEDIUM+</h2>
+        <p class="lock-desc">Upgrade ke Medium atau Premium<br>untuk akses Bloomberg News &amp; Calendar</p>
+        <button class="btn btn-gold" onclick="goPage('pricing')">UPGRADE SEKARANG</button>
+      </div>
+
+      <!-- News Content -->
+      <div class="news-content" id="nc-content" hidden>
+
+        <!-- Header Row -->
+        <div class="news-header-row">
+          <span class="section-eyebrow">FINANCIAL NEWS</span>
+          <span class="news-clock" id="newsClock">--:-- UTC</span>
+        </div>
+
+        <!-- Category Filter Bar -->
+        <div class="nf-bar" id="nfBar" role="group" aria-label="News category filter">
+          <button class="nf-btn nf-btn--active" data-cat="all"       onclick="filterNews('all',this)">ALL</button>
+          <button class="nf-btn"                data-cat="fx"        onclick="filterNews('fx',this)">FOREX</button>
+          <button class="nf-btn"                data-cat="crypto"    onclick="filterNews('crypto',this)">CRYPTO</button>
+          <button class="nf-btn"                data-cat="macro"     onclick="filterNews('macro',this)">MACRO</button>
+          <button class="nf-btn"                data-cat="equity"    onclick="filterNews('equity',this)">EQUITY</button>
+          <button class="nf-btn"                data-cat="commodity" onclick="filterNews('commodity',this)">COMMODITY</button>
+        </div>
+
+        <!-- AI Daily Bias Sentiment Bar -->
+        <div class="sab card" id="newsSentimentBar">
+          <div class="ch">
+            <span class="ct">🤖 AI DAILY BIAS</span>
+            <span class="sab-verdict" id="newsSabVerdict">BULLISH</span>
+          </div>
+          <div class="sab-body">
+            <div class="sab-track">
+              <div class="sab-needle" id="newsSabNeedle" style="left:65%;" aria-hidden="true"></div>
+            </div>
+            <div class="sab-labels">
+              <span class="sab-label sab-label--bear">BEARISH</span>
+              <span class="sab-label sab-label--neutral">NETRAL</span>
+              <span class="sab-label sab-label--bull">BULLISH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- News List Feed -->
+        <div class="news-list" id="newsList" aria-live="polite">
+          <!-- Dynamically populated by script.js -->
+        </div>
+
+        <!-- Economic Calendar -->
+        <div class="section-divider">
+          <span class="section-divider-label">ECONOMIC CALENDAR</span>
+        </div>
+        <div class="card eco-card" id="ecoCard">
+          <div id="ecoList">
+            <!-- Dynamically populated by script.js -->
+          </div>
+        </div>
+
+        <!-- Market Sentiment Bars -->
+        <div class="section-divider">
+          <span class="section-divider-label">MARKET SENTIMENT</span>
+        </div>
+        <div class="card" id="sentCard">
+          <div class="sent-wrap" id="sentList" aria-live="polite">
+            <!-- Dynamically populated by script.js -->
+          </div>
+        </div>
+
+        <div class="page-bottom-spacer"></div>
+
+      </div><!-- /#nc-content -->
+    </section><!-- /#pg-news -->
+
+
+    <!-- ===============================================================
+         PAGE: JOURNAL
+    ================================================================ -->
+    <section class="page" id="pg-journal" role="main" aria-label="Trade Journal" hidden>
+
+      <!-- Lock Overlay -->
+      <div class="lock" id="lock-journal" role="alertdialog" aria-label="Access locked">
+        <span class="lock-ico" aria-hidden="true">🔒</span>
+        <h2 class="lock-title">AKSES TERKUNCI</h2>
+        <p class="lock-desc">Login untuk mencatat<br>dan menganalisa tradingmu</p>
+        <button class="btn btn-gold" onclick="openAuth()">LOGIN / DAFTAR</button>
+      </div>
+
+      <!-- Journal Content -->
+      <div class="journal-content" id="jc-content" hidden>
+
+        <!-- ── TOP STATS ── -->
+        <div class="j-stats-grid" role="list">
+          <div class="jsc jsc-blue" role="listitem">
+            <span class="jsc-label">TOTAL TRADES</span>
+            <span class="jsc-value" id="jT">0</span>
+            <span class="jsc-sub">all pairs</span>
+          </div>
+          <div class="jsc jsc-green" role="listitem">
+            <span class="jsc-label">WIN RATE</span>
+            <span class="jsc-value" id="jWR">0.0%</span>
+            <span class="jsc-sub" id="jWLs">W:0 / L:0</span>
+          </div>
+          <div class="jsc jsc-gold" role="listitem">
+            <span class="jsc-label">TOTAL P&amp;L</span>
+            <span class="jsc-value" id="jPnl">$0.00</span>
+            <span class="jsc-sub" id="jPct">+0.00%</span>
+          </div>
+          <div class="jsc jsc-red" role="listitem">
+            <span class="jsc-label">MAX DD</span>
+            <span class="jsc-value" id="jDD">0.0%</span>
+            <span class="jsc-sub">peak-trough</span>
+          </div>
+        </div>
+
+        <!-- Share / Export Row -->
+        <div class="journal-action-row">
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📊 EXPORT CSV</button>
+          <button class="btn share-story-btn btn-sm" onclick="shareToIG()">📸 SHARE IG STORY</button>
+        </div>
+
+        <!-- ── WINRATE RING + DRAWDOWN ── -->
+        <div class="analytics-duo-grid">
+
+          <!-- Winrate Ring -->
+          <div class="card wr-card">
+            <div class="ch"><span class="ct">WINRATE</span></div>
+            <div class="wr-wrap">
+              <div class="wr-ring" aria-label="Winrate ring chart">
+                <svg
+                  class="wr-svg"
+                  viewBox="0 0 105 105"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <circle class="wr-bg-circle" cx="52.5" cy="52.5" r="45" />
+                  <circle
+                    class="wr-arc-circle"
+                    id="wrArc"
+                    cx="52.5" cy="52.5" r="45"
+                    stroke-dasharray="282.74"
+                    stroke-dashoffset="282.74"
+                  />
+                </svg>
+                <div class="wr-center-text">
+                  <span class="wr-pct" id="wrPct">0%</span>
+                  <span class="wr-sub-label">WINRATE</span>
+                </div>
+              </div>
+            </div>
+            <div class="wr-stats-row">
+              <div class="wr-stat">
+                <span class="wr-stat-num wr-stat-num--win" id="wW">0</span>
+                <span class="wr-stat-label">WINS</span>
+              </div>
+              <div class="wr-stat">
+                <span class="wr-stat-num wr-stat-num--loss" id="wL">0</span>
+                <span class="wr-stat-label">LOSSES</span>
+              </div>
+            </div>
+          </div><!-- /.wr-card -->
+
+          <!-- Drawdown Meter + Heatmap -->
+          <div class="card dd-card">
+            <div class="ch"><span class="ct">DRAWDOWN</span></div>
+            <div class="dd-wrap">
+              <div class="dd-header-row">
+                <span class="dd-label">CURRENT DD</span>
+                <span class="dd-value" id="ddcur">0.0%</span>
+              </div>
+              <div class="dd-track">
+                <div class="dd-fill" id="ddFill" style="width:0%;" aria-hidden="true"></div>
+              </div>
+              <div class="dd-ticks">
+                <span>0%</span><span class="dd-tick-mid">5%</span><span>10%</span>
+              </div>
+            </div>
+            <div class="hm-wrap">
+              <div class="hm-title">P&amp;L BY PAIR</div>
+              <div class="hm" id="hmGrid" aria-label="P&L heatmap by pair">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div><!-- /.dd-card -->
+
+        </div><!-- /.analytics-duo-grid -->
+
+        <!-- ── EQUITY CURVE CANVAS ── -->
+        <div class="card eq-card">
+          <div class="ch">
+            <span class="ct">EQUITY CURVE</span>
+            <span class="cs">CUMULATIVE P&amp;L</span>
+          </div>
+          <div class="eq-wrap">
+            <canvas id="eqCv" aria-label="Equity curve chart"></canvas>
+          </div>
+        </div>
+
+        <!-- ── PARTIAL CLOSE MANAGER ── -->
+        <div class="card pc-card">
+          <div class="ch"><span class="ct">TRADE MANAGER — PARTIAL CLOSE</span></div>
+          <div class="pc-wrap">
+            <div class="pc-header-row">
+              <span class="pc-label">CLOSE PERCENTAGE</span>
+              <span class="pc-pct-display" id="pcPct">50%</span>
+            </div>
+            <input
+              type="range"
+              id="pcRange"
+              class="pc-range"
+              min="10" max="100" value="50" step="10"
+              oninput="updatePC(this.value)"
+              aria-label="Partial close percentage"
+            />
+            <div class="pc-calc-grid">
+              <div class="pc-calc-box">
+                <span class="pc-calc-label">LOT TO CLOSE</span>
+                <span class="pc-calc-value" id="pcLot">0.05</span>
+              </div>
+              <div class="pc-calc-box">
+                <span class="pc-calc-label">REMAINING LOT</span>
+                <span class="pc-calc-value pc-calc-value--green" id="pcRem">0.05</span>
+              </div>
+              <div class="pc-calc-box">
+                <span class="pc-calc-label">BREAKEVEN</span>
+                <span class="pc-calc-value pc-calc-value--gold" id="pcBE">—</span>
+              </div>
+              <div class="pc-calc-box">
+                <span class="pc-calc-label">SECURED P&amp;L</span>
+                <span class="pc-calc-value pc-calc-value--green" id="pcPnl">—</span>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.pc-card -->
+
+        <!-- ── TRADE LOG ── -->
+        <div class="card trade-log-card">
+          <div class="ch">
+            <span class="ct">TRADE LOG</span>
+            <div class="trade-log-actions">
+              <button class="btn btn-ghost btn-sm" onclick="exportCSV()">[ CSV ]</button>
+            </div>
+          </div>
+          <div class="trade-cards" id="tradeCards" role="list" aria-live="polite">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- ── ADD TRADE FORM ── -->
+        <div class="card add-trade-card">
+          <div class="ch"><span class="ct">TAMBAH TRADE BARU</span></div>
+          <div class="atf">
+            <div class="atf-row">
+              <div>
+                <label class="flabel" for="tPair">PAIR</label>
+                <select class="field" id="tPair" aria-label="Trading pair">
+                  <option>XAUUSD</option><option>BTCUSD</option>
+                  <option>EURUSD</option><option>GBPUSD</option>
+                  <option>USDJPY</option><option>GBPJPY</option>
+                  <option>NAS100</option><option>US30</option>
+                  <option>XAGUSD</option><option>WTIUSD</option>
+                </select>
+              </div>
+              <div>
+                <label class="flabel" for="tDir">DIRECTION</label>
+                <select class="field" id="tDir" aria-label="Trade direction">
+                  <option value="BUY">BUY ▲</option>
+                  <option value="SELL">SELL ▼</option>
+                </select>
+              </div>
+            </div>
+            <div class="atf-row">
+              <div>
+                <label class="flabel" for="tE">ENTRY</label>
+                <input type="number" class="field" id="tE" placeholder="3318.50" step="0.01" />
+              </div>
+              <div>
+                <label class="flabel" for="tX">EXIT</label>
+                <input type="number" class="field" id="tX" placeholder="3328.50" step="0.01" />
+              </div>
+            </div>
+            <div class="atf-row">
+              <div>
+                <label class="flabel" for="tSL">STOP LOSS</label>
+                <input type="number" class="field" id="tSL" placeholder="3316.50" step="0.01" />
+              </div>
+              <div>
+                <label class="flabel" for="tTP">TAKE PROFIT</label>
+                <input type="number" class="field" id="tTP" placeholder="3338.50" step="0.01" />
+              </div>
+            </div>
+            <div class="atf-row">
+              <div>
+                <label class="flabel" for="tLot">LOT SIZE</label>
+                <input type="number" class="field" id="tLot" value="0.10" step="0.01" />
+              </div>
+              <div>
+                <label class="flabel" for="tPnl">P&amp;L ($)</label>
+                <input type="number" class="field" id="tPnl" placeholder="50.00" />
+              </div>
+            </div>
+            <div>
+              <label class="flabel" for="tNote">NOTES</label>
+              <textarea
+                class="field"
+                id="tNote"
+                placeholder="Setup: QM + OCL retest. Confluence: SBR level + FVG aligned with NY KZ..."
+              ></textarea>
+            </div>
+            <button class="btn btn-gold" onclick="addTrade()">+ LOG TRADE TO JOURNAL</button>
+          </div>
+        </div>
+
+        <!-- Hidden canvas for IG Story export -->
+        <canvas id="shareCanvas" hidden aria-hidden="true"></canvas>
+
+        <div class="page-bottom-spacer"></div>
+
+      </div><!-- /#jc-content -->
+    </section><!-- /#pg-journal -->
+
+
+    <!-- ===============================================================
+         PAGE: CHAT
+    ================================================================ -->
+    <section class="page" id="pg-chat" role="main" aria-label="Trader Community Chat" hidden>
+
+      <!-- Lock Overlay -->
+      <div class="lock" id="lock-chat" role="alertdialog" aria-label="Access locked">
+        <span class="lock-ico" aria-hidden="true">🔒</span>
+        <h2 class="lock-title">AKSES TERKUNCI</h2>
+        <p class="lock-desc">Login untuk bergabung<br>dengan komunitas trader SHELEN</p>
+        <button class="btn btn-gold" onclick="openAuth()">LOGIN / DAFTAR</button>
+      </div>
+
+      <!-- Chat Content -->
+      <div class="chat-content" id="cc-content" hidden>
+
+        <!-- Hall of Fame Leaderboard Strip -->
+        <div class="leaderboard-strip" role="complementary" aria-label="Hall of Fame">
+          <div class="lb-title">🏆 HALL OF FAME — TOP TRADER BULAN INI</div>
+          <div class="lb-grid">
+            <div class="lb-item">
+              <span class="lb-rank" aria-hidden="true">🥇</span>
+              <div class="lb-avatar lb-avatar--gold">AP</div>
+              <div class="lb-info">
+                <span class="lb-name">AlphaTrader</span>
+                <span class="lb-stats"><span class="lb-wr">WR 87%</span> · +$4,280</span>
+              </div>
+            </div>
+            <div class="lb-item">
+              <span class="lb-rank" aria-hidden="true">🥈</span>
+              <div class="lb-avatar lb-avatar--silver">QM</div>
+              <div class="lb-info">
+                <span class="lb-name">QuantMaster</span>
+                <span class="lb-stats"><span class="lb-wr">WR 81%</span> · +$3,150</span>
+              </div>
+            </div>
+            <div class="lb-item">
+              <span class="lb-rank" aria-hidden="true">🥉</span>
+              <div class="lb-avatar lb-avatar--bronze">FX</div>
+              <div class="lb-info">
+                <span class="lb-name">ForexKing</span>
+                <span class="lb-stats"><span class="lb-wr">WR 76%</span> · +$2,640</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="chat-messages" id="chatMsgs" role="log" aria-live="polite" aria-label="Chat messages">
+          <!-- Dynamically populated by script.js -->
+        </div>
+
+        <!-- Reply Preview (injected by script.js when reply initiated) -->
+        <!-- <div class="reply-preview" id="chatReplyPreview" hidden>...</div> -->
+
+        <!-- Input Area -->
+        <div class="chat-input-wrap" id="chatInputWrap">
+          <!-- Emoji Bar -->
+          <div class="emoji-bar" id="emojiBar" role="toolbar" aria-label="Emoji picker">
+            <!-- Dynamically populated by script.js -->
+          </div>
+          <!-- Input Row -->
+          <div class="chat-row">
+            <button class="chat-img-btn" onclick="document.getElementById('imgInput').click()" aria-label="Send image">📷</button>
+            <input type="file" id="imgInput" accept="image/*" style="display:none;" onchange="sendImage(this)" />
+
+            <textarea
+              class="chat-inp"
+              id="chatInput"
+              placeholder="Ketik pesan ke komunitas…"
+              rows="1"
+              aria-label="Message input"
+              onkeydown="handleChatKey(event)"
+              oninput="autoResizeChatInput(this)"
+            ></textarea>
+
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" aria-label="Record voice note">🎙</button>
+            <button class="chat-send-btn" onclick="sendMsg()" aria-label="Send message">➤</button>
+          </div>
+        </div>
+
+      </div><!-- /#cc-content -->
+    </section><!-- /#pg-chat -->
+
+
+    <!-- ===============================================================
+         PAGE: HUB (Minigame + Affiliate)
+    ================================================================ -->
+    <section class="page" id="pg-hub" role="main" aria-label="The Hub" hidden>
+
+      <!-- Game Section -->
+      <div class="hub-content">
+
+        <header class="hub-game-header">
+          <h2 class="hub-game-title">🎮 THE ALCHEMIST CANDLE</h2>
+          <p class="hub-game-sub">Dodge bearish candles · Collect gold · Trade like machines</p>
+        </header>
+
+        <div class="game-score-row" role="list">
+          <div class="mc" role="listitem">
+            <div class="mc-label">SCORE</div>
+            <div class="mc-value mc-value--gold" id="gameScore">0</div>
+          </div>
+          <div class="mc" role="listitem">
+            <div class="mc-label">HIGH SCORE</div>
+            <div class="mc-value mc-value--gold" id="gameHigh">0</div>
+          </div>
+        </div>
+
+        <!-- Game Canvas Wrapper -->
+        <div class="game-canvas-wrap">
+          <canvas
+            id="gameCanvas"
+            width="360"
+            height="220"
+            aria-label="Alchemist Candle game"
+            role="img"
+          ></canvas>
+
+          <!-- Start Overlay -->
+          <div class="game-overlay" id="gameOverlay">
+            <h3 class="game-overlay-title">THE ALCHEMIST CANDLE</h3>
+            <p class="game-overlay-hint">Tap · Spacebar · Swipe UP to jump<br>Avoid the red bearish candles</p>
+            <button class="btn btn-gold" onclick="startGame()">▶ START GAME</button>
+          </div>
+
+          <!-- Game Over Screen -->
+          <div class="game-over-screen" id="gameOverScreen" hidden>
+            <span class="game-over-label">GAME OVER</span>
+            <p class="game-over-msg" id="gameOverMsg"></p>
+            <span class="game-over-score" id="gameOverScore"></span>
+            <button class="btn btn-gold2" onclick="restartGame()">↺ RESTART</button>
+          </div>
+
+        </div><!-- /.game-canvas-wrap -->
+
+        <p class="game-controls-hint">TAP CANVAS · SPACEBAR · SWIPE UP to JUMP</p>
+
+        <!-- Broker Partner Block -->
+        <section class="hub-broker" aria-label="Broker Partners">
+          <div class="section-divider">
+            <span class="section-divider-label">AKTIVASI PREMIUM GRATIS</span>
+          </div>
+          <div class="broker-card card">
+            <p class="broker-headline">🎁 DAFTAR VIA BROKER PARTNER — DAPAT PREMIUM GRATIS SEUMUR HIDUP</p>
+            <p class="broker-desc">
+              Daftar di salah satu broker via link Nizar → deposit → kirim nomor akun ke WhatsApp Admin
+              untuk aktivasi PREMIUM seumur hidup.
+            </p>
+            <div class="broker-btn-col">
+              <a
+                href="https://www.hfmtrade-ind.com/sv/en/?refid=30517682"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-gold2"
+              >🏦 HFM — Cocok Buat Modal Kecil →</a>
+              <a
+                href="https://one.exnessonelink.com/a/4qa0vqh2p9?source=app&platform=mobile&pid=mobile_share"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-cyan"
+              >⚡ EXNESS — Terbaik Instant Withdraw →</a>
+              <a
+                href="https://wa.me/62895338203376?text=Halo+Admin+SHELEN%2C+saya+sudah+daftar+dan+deposit+via+broker+partner.+Nomor+akun+saya%3A+"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-green"
+              >💬 Kirim Nomor Akun ke Admin WA →</a>
+            </div>
+          </div>
+        </section>
+
+        <div class="page-bottom-spacer"></div>
+
+      </div><!-- /.hub-content -->
+    </section><!-- /#pg-hub -->
+
+
+    <!-- ===============================================================
+         PAGE: PRICING
+    ================================================================ -->
+    <section class="page" id="pg-pricing" role="main" aria-label="Pricing Plans" hidden>
+
+      <!-- Page Header -->
+      <div class="pricing-hero">
+        <div class="pricing-eyebrow">SHELEN PRECISION ENGINE</div>
+        <h2 class="pricing-title">PILIH <span class="pricing-title-gold">PLAN</span><br>KAMU</h2>
+        <p class="pricing-sub">Mulai gratis, upgrade kapan saja · Tanpa kontrak</p>
+      </div>
+
+      <!-- Tier Cards -->
+      <div class="tiers-container">
+
+        <!-- FREE -->
+        <div class="tier-card tier-card--free" id="tc-free" onclick="chooseTier('free')" role="button" tabindex="0" aria-label="Free plan">
+          <div class="tier-current-badge" id="badge-free">✓ AKTIF</div>
+          <div class="tier-inner">
+            <div class="tier-name tier-name--free">FREE</div>
+            <div class="tier-price">$0</div>
+            <div class="tier-period">/bulan · selamanya</div>
+            <p class="tier-pitch">Coba SHELEN tanpa biaya. Akses fitur dasar dengan 5 signal per hari.</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks" role="list">
+              <li class="perk perk--on"><span class="perk-ico">✅</span> 5 AI Signal per hari</li>
+              <li class="perk perk--on"><span class="perk-ico">✅</span> Chart TradingView Realtime</li>
+              <li class="perk perk--on"><span class="perk-ico">✅</span> Trade Journal (basic)</li>
+              <li class="perk perk--on"><span class="perk-ico">✅</span> MT5 Bridge (basic)</li>
+              <li class="perk perk--off"><span class="perk-ico">❌</span> AI Photo Analysis</li>
+              <li class="perk perk--off"><span class="perk-ico">❌</span> Bloomberg News</li>
+              <li class="perk perk--off"><span class="perk-ico">❌</span> Orderbook DOM</li>
+            </ul>
+            <button class="tier-btn tier-btn--free" onclick="chooseTier('free'); event.stopPropagation()">
+              MULAI GRATIS →
+            </button>
+          </div>
+        </div>
+
+        <!-- MEDIUM -->
+        <div class="tier-card tier-card--med" id="tc-medium" onclick="openPayModal('medium')" role="button" tabindex="0" aria-label="Medium plan $6/month">
+          <div class="tier-current-badge" id="badge-medium">✓ AKTIF</div>
+          <div class="tier-inner">
+            <div class="tier-name tier-name--med">MEDIUM</div>
+            <div class="tier-price">$6</div>
+            <div class="tier-period">/bulan · hemat 40% annual</div>
+            <p class="tier-pitch">Untuk trader aktif. 50 signal per hari + analisa AI mendalam setiap sesi.</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks" role="list">
+              <li class="perk perk--on"><span class="perk-ico">⚡</span> 50 AI Signal per hari <span class="perk-note">10× lebih banyak dari Free</span></li>
+              <li class="perk perk--on"><span class="perk-ico">📷</span> AI Photo Chart Analysis <span class="perk-note gold">Upload chart → AI baca full setup</span></li>
+              <li class="perk perk--on"><span class="perk-ico">🧠</span> AI Deep Reasoning <span class="perk-note gold">Alchemist v8 — Full analysis text</span></li>
+              <li class="perk perk--on"><span class="perk-ico">📰</span> Bloomberg News + Calendar</li>
+              <li class="perk perk--on"><span class="perk-ico">📊</span> Orderbook DOM Visualizer</li>
+              <li class="perk perk--on"><span class="perk-ico">💱</span> Currency Strength Meter</li>
+              <li class="perk perk--off"><span class="perk-ico">❌</span> Signal Unlimited</li>
+              <li class="perk perk--off"><span class="perk-ico">❌</span> Priority Support Nizar</li>
+            </ul>
+            <button class="tier-btn tier-btn--med" onclick="openPayModal('medium'); event.stopPropagation()">
+              PILIH MEDIUM →
+            </button>
+          </div>
+        </div>
+
+        <!-- PREMIUM -->
+        <div class="tier-card tier-card--pro" id="tc-premium" onclick="openPayModal('premium')" role="button" tabindex="0" aria-label="Premium plan $20/month">
+          <div class="tier-popular-badge">🔥 TERPOPULER</div>
+          <div class="tier-current-badge" id="badge-premium">✓ AKTIF</div>
+          <div class="tier-inner">
+            <div class="tier-name tier-name--pro">PREMIUM</div>
+            <div class="tier-price">$20</div>
+            <div class="tier-period">/bulan · semua fitur tanpa batas</div>
+            <p class="tier-pitch">Untuk trader serius. Maximum edge. Zero compromise. Full arsenal aktif 24/7.</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks" role="list">
+              <li class="perk perk--on"><span class="perk-ico">♾️</span> Signal UNLIMITED setiap hari <span class="perk-note gold">Scan sebanyak yang kamu mau</span></li>
+              <li class="perk perk--on"><span class="perk-ico">🤖</span> AI Photo Analysis — No Limit <span class="perk-note gold">ICT+SMC+Alchemist full confluence</span></li>
+              <li class="perk perk--on"><span class="perk-ico">🏆</span> Full Confluence Engine <span class="perk-note gold">Scalp + Intraday + Swing</span></li>
+              <li class="perk perk--on"><span class="perk-ico">📈</span> Advanced Portfolio Analytics <span class="perk-note gold">DD meter · P&amp;L heatmap · Partial close</span></li>
+              <li class="perk perk--on"><span class="perk-ico">🔊</span> Voice Alert + Auto Journal Log <span class="perk-note gold">Signal otomatis masuk journal</span></li>
+              <li class="perk perk--on"><span class="perk-ico">👑</span> Hall of Fame Priority Rank</li>
+              <li class="perk perk--on"><span class="perk-ico">💬</span> Priority Support dari Nizar <span class="perk-note gold">Respons 1×24 jam — WA</span></li>
+            </ul>
+            <button class="tier-btn tier-btn--pro" onclick="openPayModal('premium'); event.stopPropagation()">
+              UPGRADE PREMIUM ⚡
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /.tiers-container -->
+
+      <!-- Comparison Table -->
+      <div class="cmp-table" role="table" aria-label="Plan comparison">
+        <div class="cmp-header" role="row">
+          <div class="cmp-cell cmp-feat-col" role="columnheader">FITUR</div>
+          <div class="cmp-cell" role="columnheader" style="color:var(--green)">FREE</div>
+          <div class="cmp-cell" role="columnheader" style="color:var(--cyan)">MED</div>
+          <div class="cmp-cell" role="columnheader" style="color:var(--gold2)">PRO</div>
+        </div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">AI Signal / Hari</div><div class="cmp-cell cmp-pill">5</div><div class="cmp-cell cmp-pill">50</div><div class="cmp-cell cmp-yes">∞</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">Photo AI Analysis</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">Bloomberg News</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">Orderbook DOM</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">MT5 Bridge Full</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">Swing Trading Mode</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row" role="row"><div class="cmp-cell cmp-feat-col">Priority Support</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-no">✗</div><div class="cmp-cell cmp-yes">✓</div></div>
+        <div class="cmp-row cmp-row--last" role="row"><div class="cmp-cell cmp-feat-col">Harga / Bulan</div><div class="cmp-cell cmp-pill">FREE</div><div class="cmp-cell cmp-pill">$6</div><div class="cmp-cell cmp-pill">$20</div></div>
+      </div>
+
+      <div class="page-bottom-spacer"></div>
+
+    </section><!-- /#pg-pricing -->
+
+
+  </main><!-- /#mainContent -->
+
+
+  <!-- =================================================================
+       BOTTOM NAVIGATION BAR
+  ================================================================== -->
+  <nav class="botnav" role="navigation" aria-label="Primary navigation">
+    <button class="bn bn--active" id="bn-home"     onclick="goPage('home')"     aria-label="Home"     aria-current="page">
+      <span class="bn-icon" aria-hidden="true">🏠</span>
+      <span class="bn-label">HOME</span>
+    </button>
+    <button class="bn" id="bn-terminal"            onclick="goPage('terminal')" aria-label="Signal Terminal">
+      <span class="bn-icon" aria-hidden="true">⚡</span>
+      <span class="bn-label">SIGNAL</span>
+    </button>
+    <button class="bn" id="bn-news"                onclick="goPage('news')"     aria-label="Financial News">
+      <span class="bn-icon" aria-hidden="true">📰</span>
+      <span class="bn-label">NEWS</span>
+    </button>
+    <button class="bn" id="bn-journal"             onclick="goPage('journal')"  aria-label="Trade Journal">
+      <span class="bn-icon" aria-hidden="true">📓</span>
+      <span class="bn-label">JOURNAL</span>
+    </button>
+    <button class="bn" id="bn-chat"                onclick="goPage('chat')"     aria-label="Community Chat">
+      <span class="bn-icon" aria-hidden="true">💬</span>
+      <span class="bn-label">CHAT</span>
+    </button>
+    <button class="bn" id="bn-hub"                 onclick="goPage('hub')"      aria-label="The Hub">
+      <span class="bn-icon" aria-hidden="true">🎮</span>
+      <span class="bn-label">HUB</span>
+    </button>
+    <button class="bn" id="bn-pricing"             onclick="goPage('pricing')"  aria-label="Pricing Plans">
+      <span class="bn-icon" aria-hidden="true">💎</span>
+      <span class="bn-label">PLANS</span>
+    </button>
+  </nav><!-- /.botnav -->
+
+</div><!-- /#app -->
+
+
+<!-- =====================================================================
+     MODAL: AUTH (Login / Register)
+====================================================================== -->
+<div
+  class="modal-overlay auth-overlay"
+  id="authOverlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Authentication"
+  hidden
+>
+  <div class="modal-sheet auth-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+
+    <!-- Brand -->
+    <div class="auth-logo" aria-label="SHELEN">
+      <span class="auth-logo-she">SHE</span><span class="auth-logo-len">LEN</span>
+    </div>
+    <p class="auth-tagline">PRECISION OVER NOISE · MT5 BRIDGE EDITION</p>
+
+    <!-- Tabs -->
+    <div class="auth-tabs" role="tablist">
+      <button
+        class="auth-tab auth-tab--active"
+        id="tabLogin"
+        role="tab"
+        aria-selected="true"
+        aria-controls="loginForm"
+        onclick="switchAuthTab('login')"
+      >MASUK</button>
+      <button
+        class="auth-tab"
+        id="tabReg"
+        role="tab"
+        aria-selected="false"
+        aria-controls="regForm"
+        onclick="switchAuthTab('reg')"
+      >DAFTAR</button>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form auth-form--active" id="loginForm" role="tabpanel" onsubmit="event.preventDefault(); doLogin()">
+      <div class="form-group">
+        <label class="flabel" for="lEmail">EMAIL</label>
+        <input
+          type="email"
+          class="field"
+          id="lEmail"
+          placeholder="email@kamu.com"
+          autocomplete="email"
+          inputmode="email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label class="flabel" for="lPass">PASSWORD</label>
+        <input
+          type="password"
+          class="field"
+          id="lPass"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-gold">MASUK KE TERMINAL</button>
+      <p class="auth-switch-text">
+        Belum punya akun?
+        <button type="button" class="auth-switch-link" onclick="switchAuthTab('reg')">Daftar sekarang</button>
+      </p>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form" id="regForm" role="tabpanel" onsubmit="event.preventDefault(); doRegister()">
+      <div class="form-group">
+        <label class="flabel" for="rName">NAMA LENGKAP</label>
+        <input
+          type="text"
+          class="field"
+          id="rName"
+          placeholder="Nama Kamu"
+          autocomplete="name"
+          required
+        />
+      </div>
+      <div class="auth-row">
+        <div class="form-group">
+          <label class="flabel" for="rEmail">EMAIL</label>
+          <input
+            type="email"
+            class="field"
+            id="rEmail"
+            placeholder="email@kamu.com"
+            autocomplete="email"
+            inputmode="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="flabel" for="rPass">PASSWORD</label>
+          <input
+            type="password"
+            class="field"
+            id="rPass"
+            placeholder="Min 6 karakter"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Plan Selector -->
+      <div class="form-group">
+        <label class="flabel">PILIH PLAN AWAL</label>
+        <div class="plan-picker" role="radiogroup" aria-label="Initial plan selection">
+          <div class="plan-pill plan-pill--active" id="pp-free"    role="radio" aria-checked="true"  tabindex="0" onclick="selectRegPlan('free')" onkeydown="if(event.key==='Enter')selectRegPlan('free')">
+            <span class="plan-pill-name">FREE</span>
+            <span class="plan-pill-price">$0<span class="plan-pill-mo">/bln</span></span>
+            <span class="plan-pill-feat">5 signal/hari</span>
+          </div>
+          <div class="plan-pill" id="pp-medium"  role="radio" aria-checked="false" tabindex="0" onclick="selectRegPlan('medium')" onkeydown="if(event.key==='Enter')selectRegPlan('medium')">
+            <span class="plan-pill-name">MEDIUM</span>
+            <span class="plan-pill-price">$6<span class="plan-pill-mo">/bln</span></span>
+            <span class="plan-pill-feat">50 signal/hari</span>
+          </div>
+          <div class="plan-pill" id="pp-premium" role="radio" aria-checked="false" tabindex="0" onclick="selectRegPlan('premium')" onkeydown="if(event.key==='Enter')selectRegPlan('premium')">
+            <span class="plan-pill-name">PREMIUM</span>
+            <span class="plan-pill-price">$20<span class="plan-pill-mo">/bln</span></span>
+            <span class="plan-pill-feat">∞ signal</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-gold">BUAT AKUN SEKARANG</button>
+      <p class="auth-switch-text">
+        Dengan mendaftar kamu menyetujui
+        <button type="button" class="auth-switch-link" onclick="openTosModal()">Syarat &amp; Ketentuan</button>
+      </p>
+    </form>
+
+  </div>
+</div><!-- /#authOverlay -->
+
+
+<!-- =====================================================================
+     MODAL: SYMBOL PICKER
+====================================================================== -->
+<div
+  class="modal-overlay sym-modal-overlay"
+  id="symModal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Select Instrument"
+  hidden
+>
+  <div class="modal-sheet sym-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="modal-sheet-title">PILIH INSTRUMEN</h3>
+    <p class="modal-sheet-sub">Harga realtime dari MT5 Bridge</p>
+    <div class="sym-grid" id="symGrid" role="list">
+      <!-- Dynamically populated by script.js -->
+    </div>
+    <button class="btn btn-ghost" onclick="closeSymModal()">TUTUP</button>
+  </div>
+</div><!-- /#symModal -->
+
+
+<!-- =====================================================================
+     MODAL: MT5 BRIDGE CONFIGURATION
+====================================================================== -->
+<div
+  class="modal-overlay mt5-modal-overlay"
+  id="mt5Modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="MT5 Bridge Configuration"
+  hidden
+>
+  <div class="modal-sheet mt5-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="mt5-modal-title">MT5 BRIDGE</h3>
+    <p class="mt5-modal-sub">WebSocket · Nol Delay · Langsung Dari Akun MT5</p>
+
+    <!-- Status Block -->
+    <div class="mt5-modal-status-block" id="mt5ModalStatusBlock">
+      <div class="mt5-modal-status-row">
+        <span class="mt5-status-dot" id="mt5ModalDot" data-state="disconnected"></span>
+        <span class="mt5-modal-status-txt" id="mt5ModalStatusTxt">TIDAK TERHUBUNG</span>
+      </div>
+      <div class="mt5-modal-latency-row">
+        <span class="mt5-modal-latency-label">Latency</span>
+        <span class="mt5-modal-latency-val" id="mt5ModalLatency">—</span>
+      </div>
+    </div>
+
+    <!-- Bridge URL Input -->
+    <div class="form-group mt5-url-group">
+      <label class="flabel" for="mt5UrlInput">BRIDGE URL</label>
+      <div class="mt5-url-row">
+        <input
+          type="text"
+          class="field"
+          id="mt5UrlInput"
+          value="ws://localhost:8080"
+          placeholder="ws://localhost:8080"
+          autocomplete="off"
+          spellcheck="false"
+          inputmode="url"
+          aria-label="MT5 Bridge WebSocket URL"
+        />
+        <button class="btn btn-green btn-sm" onclick="MT5Bridge.connect()" aria-label="Connect">CONNECT</button>
+      </div>
+    </div>
+
+    <!-- Connection Actions -->
+    <div class="mt5-action-row">
+      <button class="btn btn-red btn-sm"   onclick="MT5Bridge.disconnect()" aria-label="Disconnect">⏹ DISCONNECT</button>
+      <button class="btn btn-ghost btn-sm" onclick="MT5Bridge.reconnect()"  aria-label="Reconnect">↺ RECONNECT</button>
+    </div>
+
+    <!-- EA Setup Instructions -->
+    <div class="mt5-info-box">
+      <span class="mt5-info-title">📋 CARA SETUP EA BRIDGE</span>
+      <ol class="mt5-info-steps">
+        <li>Download EA <strong>"Shelen_Bridge.ex5"</strong> dari Admin via WA.</li>
+        <li>Attach EA ke chart mana saja di MT5 (timeframe bebas).</li>
+        <li>Di Input Parameter EA: set <strong>Port = 8080</strong> (atau custom).</li>
+        <li>Allow WebSocket: <em>Tools → Options → Expert Advisors → Allow WebRequest</em>.</li>
+        <li>EA akan start server. Masukkan URL di atas dan klik <strong>CONNECT</strong>.</li>
+      </ol>
+      <p class="mt5-info-note">
+        Payload format EA → Bridge:<br>
+        <code>{"type":"tick","symbol":"XAUUSD","bid":2345.12,"ask":2345.34,"spread":0.22}</code><br>
+        <code>{"type":"account","balance":10000,"equity":9820,"margin":180,"freeMargin":9640,"drawdown":1.8}</code><br>
+        <code>{"type":"positions","data":[{"ticket":123,"symbol":"XAUUSD","type":"buy","volume":0.1,"profit":34.5}]}</code>
+      </p>
+    </div>
+
+    <!-- Subscribed Pairs -->
+    <div class="form-group">
+      <label class="flabel">SUBSCRIBED PAIRS</label>
+      <div class="mt5-pairs-grid" id="mt5PairsGrid">
+        <!-- Dynamically populated by script.js -->
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="closeMT5Modal()">TUTUP</button>
+
+  </div>
+</div><!-- /#mt5Modal -->
+
+
+<!-- =====================================================================
+     MODAL: PAYMENT
+====================================================================== -->
+<div
+  class="modal-overlay pay-modal-overlay"
+  id="payModal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Payment"
+  hidden
+>
+  <div class="modal-sheet pay-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+
+    <div class="pay-plan-badge" id="payPlanBadge">💎 PREMIUM</div>
+    <h3 class="pay-title">UPGRADE PLAN</h3>
+    <p class="pay-subtitle" id="payPlanName">Aktifkan akses penuh ke SHELEN Terminal</p>
+
+    <!-- QRIS -->
+    <div class="qris-wrap">
+      <div class="qris-placeholder" aria-label="QRIS Payment Code">
+        <span class="qris-ico" aria-hidden="true">📱</span>
+        <span class="qris-text">QRIS — Nizar Nurkhalik</span>
+      </div>
+      <p class="qris-caption">SCAN QR · TRANSFER SESUAI NOMINAL UNIK</p>
+    </div>
+
+    <!-- Amount Breakdown -->
+    <div class="pay-amounts">
+      <div class="pay-amount-row">
+        <span>Harga Plan</span>
+        <span id="payBaseAmt">—</span>
+      </div>
+      <div class="pay-amount-row">
+        <span>Kode Unik</span>
+        <span id="payCodeAmt" class="pay-code-amt">—</span>
+      </div>
+      <div class="pay-amount-row pay-amount-row--total">
+        <span>TOTAL TRANSFER</span>
+        <span id="payTotalBig">—</span>
+      </div>
+    </div>
+
+    <!-- Unique Code Note -->
+    <div class="pay-unique-note">
+      <strong>⚠️ NOMINAL UNIK — WAJIB TEPAT</strong><br>
+      Transfer HARUS tepat sesuai nominal di atas (termasuk kode unik).
+      Kode unik mempermudah verifikasi manual oleh Admin.
+    </div>
+
+    <!-- WA Confirm Button -->
+    <button class="btn btn-wa" onclick="doWhatsAppTransfer()">
+      💬 SAYA SUDAH TRANSFER — KONFIRMASI VIA WA
+    </button>
+    <button class="btn btn-ghost" onclick="closePayModal()" style="margin-top:8px;">
+      BATAL
+    </button>
+
+  </div>
+</div><!-- /#payModal -->
+
+
+<!-- =====================================================================
+     MODAL: SETTINGS
+====================================================================== -->
+<div
+  class="modal-overlay settings-modal-overlay"
+  id="settingsModal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Settings"
+  hidden
+>
+  <div class="modal-sheet settings-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="settings-title">PENGATURAN</h3>
+    <p class="settings-sub">SHELEN v13 — PERSONALISASI</p>
+
+    <!-- Tampilan -->
+    <div class="settings-section">
+      <div class="settings-section-title">TAMPILAN</div>
+      <div class="settings-row">
+        <span class="settings-label">Accent Color</span>
+        <input type="color" class="color-picker" value="#f0b44a" oninput="changeAccentColor(this.value)" aria-label="Accent color" />
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">CRT Scanlines</span>
+        <div class="toggle-wrap">
+          <button class="toggle" id="scanToggleSettings" role="switch" aria-checked="false" onclick="toggleScanlines()" aria-label="CRT scanlines"></button>
+          <span class="toggle-label" id="scanLabelSettings">OFF</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifikasi -->
+    <div class="settings-section">
+      <div class="settings-section-title">NOTIFIKASI &amp; AUDIO</div>
+      <div class="settings-row">
+        <span class="settings-label">Voice Alert (Signal)</span>
+        <div class="toggle-wrap">
+          <button class="toggle toggle--on" id="voiceAlertToggle" role="switch" aria-checked="true" onclick="toggleVoiceAlert()" aria-label="Voice alert"></button>
+          <span class="toggle-label" id="voiceAlertLabel">ON</span>
+        </div>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Killzone Clock</span>
+        <div class="toggle-wrap">
+          <button class="toggle toggle--on" id="kzToggle" role="switch" aria-checked="true" onclick="toggleKZWidget()" aria-label="Killzone clock"></button>
+          <span class="toggle-label" id="kzToggleLabel">ON</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Akun Info -->
+    <div class="settings-section">
+      <div class="settings-section-title">AKUN &amp; PLAN</div>
+      <div class="settings-row"><span class="settings-label">Status Akun</span><span class="settings-value" id="settAccName">GUEST</span></div>
+      <div class="settings-row"><span class="settings-label">Plan Aktif</span><span class="settings-value" id="settPlanStatus">FREE</span></div>
+      <div class="settings-row"><span class="settings-label">Signal Hari Ini</span><span class="settings-value" id="settSigCount">0 / 5</span></div>
+    </div>
+
+    <!-- MT5 Bridge -->
+    <div class="settings-section">
+      <div class="settings-section-title">MT5 BRIDGE</div>
+      <div class="settings-row"><span class="settings-label">Status</span><span class="settings-value" id="settMT5Status">DISCONNECTED</span></div>
+      <div class="settings-row"><span class="settings-label">URL</span><span class="settings-value settings-value--mono" id="settMT5URL">ws://localhost:8080</span></div>
+      <button class="btn btn-ghost btn-sm" onclick="closeSett(); openMT5Modal();" style="margin-top:6px;">⚙ BUKA MT5 SETUP</button>
+    </div>
+
+    <!-- About -->
+    <div class="settings-section">
+      <div class="settings-section-title">TENTANG SHELEN</div>
+      <div class="settings-row"><span class="settings-label">Versi Terminal</span><span class="settings-value">SHELEN v13</span></div>
+      <div class="settings-row"><span class="settings-label">AI Engine</span><span class="settings-value">ALCHEMIST v8</span></div>
+      <div class="settings-row"><span class="settings-label">Data Source</span><span class="settings-value">MT5 Bridge WSS</span></div>
+      <div class="settings-row"><span class="settings-label">Founder</span><span class="settings-value">Nizar Nurkhalik</span></div>
+      <div class="settings-row"><span class="settings-label">Kontak Admin</span><span class="settings-value">wa.me/6285839053130</span></div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="closeSettingsModal()">TUTUP PENGATURAN</button>
+  </div>
+</div><!-- /#settingsModal -->
+
+
+<!-- =====================================================================
+     MODAL: TERMS OF SERVICE
+====================================================================== -->
+<div
+  class="modal-overlay tos-modal-overlay"
+  id="tosModal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Terms of Service"
+  hidden
+>
+  <div class="modal-sheet tos-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="tos-title">SYARAT &amp; KETENTUAN</h3>
+
+    <div class="tos-body">
+      <h4>1. DEFINISI</h4>
+      <p>SHELEN adalah platform terminal trading berbasis AI yang menyediakan sinyal, analisa, dan alat bantu trading. Pengguna adalah individu yang mendaftar dan menggunakan layanan SHELEN.</p>
+
+      <h4>2. RISIKO TRADING</h4>
+      <p>Trading forex, komoditas, dan aset keuangan mengandung risiko kerugian yang signifikan termasuk kemungkinan kehilangan seluruh modal. SHELEN <strong>tidak memberikan jaminan profit</strong>. Semua sinyal dan analisa bersifat informatif dan bukan rekomendasi investasi. Pengguna bertanggung jawab penuh atas keputusan trading mereka.</p>
+
+      <h4>3. PENGGUNAAN PLATFORM</h4>
+      <p>Pengguna dilarang menggunakan platform untuk aktivitas ilegal. Akun tidak dapat dipindahtangankan. SHELEN berhak menangguhkan akun yang melanggar ketentuan tanpa pemberitahuan sebelumnya.</p>
+
+      <h4>4. PEMBAYARAN &amp; REFUND</h4>
+      <p>Pembayaran plan dilakukan via transfer bank atau QRIS. Tidak ada pengembalian dana (refund) setelah plan diaktifkan, kecuali terdapat kesalahan teknis yang terbukti dari pihak SHELEN.</p>
+
+      <h4>5. PRIVASI DATA</h4>
+      <p>Data pengguna (akun, trade journal, preferensi) disimpan secara lokal di perangkat pengguna (localStorage). SHELEN tidak mengirimkan data pribadi ke server pihak ketiga tanpa persetujuan eksplisit pengguna.</p>
+
+      <h4>6. MT5 BRIDGE</h4>
+      <p>Koneksi MT5 Bridge bersifat peer-to-peer antara aplikasi SHELEN dan EA di MetaTrader 5 pengguna. SHELEN tidak menyimpan atau mengakses data akun MT5 pengguna. Keamanan koneksi sepenuhnya menjadi tanggung jawab pengguna.</p>
+
+      <h4>7. PERUBAHAN KETENTUAN</h4>
+      <p>SHELEN berhak mengubah ketentuan ini sewaktu-waktu. Penggunaan berkelanjutan dianggap sebagai persetujuan terhadap perubahan tersebut.</p>
+
+      <h4>8. KONTAK</h4>
+      <p>Pertanyaan dan dukungan: <a href="https://wa.me/6285839053130" target="_blank" rel="noopener noreferrer">wa.me/6285839053130</a> (Nizar Nurkhalik — Founder SHELEN)</p>
+    </div>
+
+    <button class="btn btn-gold" onclick="closeTosModal()">TUTUP &amp; SETUJU</button>
+  </div>
+</div><!-- /#tosModal -->
+
+
+<!-- =====================================================================
+     GLOBAL TOAST NOTIFICATION
+====================================================================== -->
+<div
+  class="toast"
+  id="toast"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+></div>
+
+
+<!-- =====================================================================
+     SCRIPTS
+====================================================================== -->
+<script src="js/ict-zones.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
